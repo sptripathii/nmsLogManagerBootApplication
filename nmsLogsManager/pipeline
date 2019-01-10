@@ -2,27 +2,27 @@ pipeline {
     agent any
 
     tools {
-      maven 'Maven 3.5.4'
+      maven 'Maven 3.3.9'
     }
 
     stages {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'mvn -Dmaven.test.failure.ignore=true clean compile'
+                sh 'mvn -f nmsLogsManager/pom.xml -Dmaven.test.failure.ignore=true clean compile'
             }
             }
 
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'mvn -Dmaven.test.failure.ignore=true test'
+                sh 'mvn -f nmsLogsManager/pom.xml -Dmaven.test.failure.ignore=true test'
             }
         }
         stage('Package') {
             steps {
                 echo 'Packaging....'
-                sh 'mvn -DskipTests package'
+                sh 'mvn -f nmsLogsManager/pom.xml -DskipTests package'
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
