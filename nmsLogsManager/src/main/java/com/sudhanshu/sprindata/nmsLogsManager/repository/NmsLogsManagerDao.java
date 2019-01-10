@@ -20,7 +20,7 @@ public class NmsLogsManagerDao {
 	}
 	
 	public List<NmsLogsEntity> getAllLatestLogs(){
-		Iterable<NmsLogsEntity> findAll = logRepo.findAll();
+		Iterable<NmsLogsEntity> findAll = logRepo.findTop50ByOrderByTimestampDesc();
 		return (List<NmsLogsEntity>)findAll ;
 		
 	}

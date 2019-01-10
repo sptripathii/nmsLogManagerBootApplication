@@ -32,7 +32,7 @@ public class NmsLogsManagerResource {
 		headers.add("Access-Control-Allow-Origin", "*");
 		headers.add("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS");
 		headers.add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-		return new ResponseEntity<List<NmsLogsEntity>>(logDao.getAllLogs(),headers,HttpStatus.OK);
+		return new ResponseEntity<List<NmsLogsEntity>>(logDao.getAllLatestLogs(),headers,HttpStatus.OK);
 	
 	}
 	
