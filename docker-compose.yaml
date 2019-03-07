@@ -1,0 +1,46 @@
+version: "1"
+
+volumes:
+  db-data:
+
+networks:
+  vote:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:9.4
+    volumes:
+      - "db-data:/var/lib/postgressql/data"
+    networks:
+      - vote
+
+  results:
+    image: schoolofdevops/vote-result
+    ports:
+      - 5001:80
+    networks:
+      - vote
+    depends_on:
+      - db
+
+  redis:
+    image: redis:alpine
+    networks:
+      - vote
+
+  vote:
+    depends_on:
+      - redis
+    image: schoolofdevops/vote:v3
+    networks:
+      - vote
+    ports:
+      - 5000:80
+
+  worker:
+    depends_on:
+      - redis
+    image: schoolofdevops/vote-worker
+    networks:
+      - vote
