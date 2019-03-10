@@ -10,7 +10,7 @@ import com.sudhanshu.springboot.nmsLogsManager.entities.UserEntity;
 @Repository
 public interface NmsUserManagerRepos extends MongoRepository<UserEntity, String> {
 	
-	List<UserEntity> findByUsername(String username);
+	UserEntity findByUsername(String username);
 	UserEntity findByUserid(int userid);
 	List<UserEntity> findAll();
 }

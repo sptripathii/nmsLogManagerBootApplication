@@ -20,6 +20,7 @@ public interface NmsLogsManagerRepos extends JpaRepository<NmsLogsEntity, Long> 
 	List<NmsLogsEntity> findTop50ByOrderByTimestampDesc();
 	Page<NmsLogsEntity> findAllByTimestamp(Pageable pageable);
 	Page<NmsLogsEntity> findAll(Pageable pageable);
+	List<NmsLogsEntity> findAllByIpaddressInAndTimestampLessThan(List<String> deviceList,long timeStamp, Pageable  pageable);
 	
 	long countByType(String type);
 }

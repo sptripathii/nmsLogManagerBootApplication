@@ -1,5 +1,8 @@
 package com.sudhanshu.springboot.nmsLogsManager.entities;
 
+import java.util.List;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -14,7 +17,7 @@ public class UserEntity {
 	
 	int userid;
 	
-	int refreshInterval;
+	int refreshinterval;
 
 	String username;
 
@@ -24,7 +27,8 @@ public class UserEntity {
 
 	int accesstokenvalidity;
 
-	String devices;
+	@ElementCollection(targetClass=String.class)
+	List<String> devices;
 
 	public String getPassword() {
 		return password;
@@ -50,20 +54,20 @@ public class UserEntity {
 		this.accesstokenvalidity = accesstokenvalidity;
 	}
 
-	public String getDevices() {
+	public List<String> getDevices() {
 		return devices;
 	}
 
-	public void setDevices(String devices) {
+	public void setDevices(List<String> devices) {
 		this.devices = devices;
 	}
 
 	public int getRefreshInterval() {
-		return refreshInterval;
+		return refreshinterval;
 	}
 
-	public void setRefreshInterval(int refreshInterval) {
-		this.refreshInterval = refreshInterval;
+	public void setRefreshInterval(int refreshinterval) {
+		this.refreshinterval = refreshinterval;
 	}
 
 	public String getUserName() {

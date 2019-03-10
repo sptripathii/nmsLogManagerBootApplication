@@ -25,13 +25,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 	NmsUserManagerRepos userRepo;
 
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		List<UserEntity> user = userRepo.findByUsername(userName);
+		UserEntity user = userRepo.findByUsername(userName);
 		if(user == null){
 			throw new UsernameNotFoundException("Invalid username or password.");
 		}
 		ApplicationUser applicationUser = new ApplicationUser();
-		applicationUser.setUsername(user.get(0).getUserName());
-		applicationUser.setPassword(user.get(0).getPassword());
+		applicationUser.setUsername(user.getUserName());
+		applicationUser.setPassword(user.getPassword());
 		PasswordEncoder encoder =
 			     PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		return new org.springframework.security.core.userdetails.User(applicationUser.getUsername(), encoder.encode(applicationUser.getPassword()), getAuthority());

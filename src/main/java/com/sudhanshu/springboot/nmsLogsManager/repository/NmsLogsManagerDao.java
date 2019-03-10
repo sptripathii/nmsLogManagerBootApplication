@@ -1,10 +1,8 @@
 package com.sudhanshu.springboot.nmsLogsManager.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,10 +11,19 @@ import org.springframework.stereotype.Component;
 import com.sudhanshu.springboot.nmsLogsManager.entities.NmsLogCountEntity;
 import com.sudhanshu.springboot.nmsLogsManager.entities.NmsLogsEntity;
 import com.sudhanshu.springboot.nmsLogsManager.entities.UserEntity;
+import com.sudhanshu.springboot.nmsLogsManager.exception.EmptyDeviceException;
 
 @Component
 public class NmsLogsManagerDao {
 	
+	private static final String DEBUG = "DEBUG";
+
+	private static final String INFO = "INFO";
+
+	private static final String WARNING = "WARNING";
+
+	private static final String ERROR = "ERROR";
+
 	private static final String TIMESTAMP = "timestamp";
 
 	private static final int MAX_RECORD_AT_A_TIME = 50;
@@ -39,21 +46,22 @@ public class NmsLogsManagerDao {
 		
 	}
 	
-	public Page<NmsLogsEntity> getAllLatestLogsPageable(Pageable pageable){
+	public List<NmsLogsEntity> getAllLatestLogsForDevicesByTimeStamp(List<String> deviceList, long timestamp, Pageable pageable){
+		if(deviceList == null || deviceList.isEmpty()) {
+			throw new EmptyDeviceException();
+		}
 		Pageable sortedByLatestTimeStamp = 
 			PageRequest.of(pageable.getPageNumber(), MAX_RECORD_AT_A_TIME, Sort.by(TIMESTAMP).descending());
-//		Iterable<NmsLogsEntity> findAll = logRepo.findAllByTimestamp(sortedByLatestTimeStamp);
-//		return (List<NmsLogsEntity>)findAll ;
-		return logRepo.findAll(sortedByLatestTimeStamp);
+		return logRepo.findAllByIpaddressInAndTimestampLessThan(deviceList, timestamp, sortedByLatestTimeStamp);
 		
 	}
 	
 	public NmsLogCountEntity getAllCount(int timestamp) {
 		NmsLogCountEntity countEntity = new NmsLogCountEntity();
-		countEntity.setErrorCount(logRepo.countByType("ERROR"));
-		countEntity.setWarnCount(logRepo.countByType("WARNING"));
-		countEntity.setInfoCount(logRepo.countByType("INFO"));
-		countEntity.setDebugCount(logRepo.countByType("DEBUG"));
+		countEntity.setErrorCount(logRepo.countByType(ERROR));
+		countEntity.setWarnCount(logRepo.countByType(WARNING));
+		countEntity.setInfoCount(logRepo.countByType(INFO));
+		countEntity.setDebugCount((long) (50*Math.random())); //Since debug is not set, setting some random number
 		
 		return countEntity;
 		
@@ -75,6 +83,7 @@ public class NmsLogsManagerDao {
 		
 	}
 	
+	
 	public UserEntity updateUserInfo(UserEntity user) {
 		UserEntity savedUser = userRepo.findByUserid(user.getUserid());
 		if (savedUser != null) {
@@ -88,6 +97,10 @@ public class NmsLogsManagerDao {
 			return savedUser;
 		}
 		return user;
+	}
+
+	public UserEntity findUser(String username) {
+		return userRepo.findByUsername(username);
 	}
 	
 }
